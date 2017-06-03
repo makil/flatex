@@ -8,7 +8,7 @@
     <div class="row">
     <ul>
         {% for page in pages %}
-            <li>{{ page|e }}</li>
+        <li><a href="{{ path('admin.page', {'action': 'edit','id': page }) }}">{{ page|e }}</a></li>
         {% else %}
             <li><em>no page found</em></li>
         {% endfor %}

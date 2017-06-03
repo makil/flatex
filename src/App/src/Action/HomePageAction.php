@@ -29,8 +29,7 @@ class HomePageAction implements ServerMiddlewareInterface
     {
 
         $data = [];
-
-        $requiredPage = array_key_exists('page', $request->getQueryParams()) ? 'page::' . $request->getQueryParams()['page'] : 'page::home-page' ;
+        $requiredPage = 'page::' . $request->getAttribute('page', 'home-page');
         
         try{
             $renderedPage = $this->template->render($requiredPage, $data);

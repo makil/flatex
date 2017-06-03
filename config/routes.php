@@ -25,10 +25,11 @@
  *     'contact'
  * );
  */
-
-$app->get('/', App\Action\HomePageAction::class, 'home');
+$app->get('/', App\Action\HomePageAction::class, 'home')->setOptions(['defaults' => ['page'=>'home-page']]);
+$app->get('/:page', App\Action\HomePageAction::class, 'page')->setOptions(['defaults' => ['page'=>'home-page']]);
 $app->get('/admin', Admin\Action\HomePageAction::class, 'admin.home');
 $app->get('/admin/install', Admin\Action\InstallAction::class, 'admin.install');
-$app->get('/admin/page', Admin\Action\PageAction::class, 'admin.page');
+$app->get('/admin/page[/:action[/:id]]', Admin\Action\PageAction::class, 'admin.page')
+    ->setOptions(['defaults' => ['action'=>'index', 'id'=> 0]]);
 $app->get('/admin/layout', Admin\Action\LayoutAction::class, 'admin.layout');
 $app->get('/admin/info', Admin\Action\InfoAction::class, 'admin.info');
