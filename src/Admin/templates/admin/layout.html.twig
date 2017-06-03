@@ -1,0 +1,20 @@
+{% extends '@admin.layout/admin.html.twig' %}
+
+{% block title %}Template{% endblock %}
+
+{% block content %}
+
+
+    <div class="row">
+        <h1>Layouts</h1>
+    <div class="row">
+    <ul>
+        {% for layout in layouts %}
+            <li>{{ layout|e }}</li>
+        {% else %}
+            <li><em>no layout found</em></li>
+        {% endfor %}
+    </ul>
+    
+    </div>
+{% endblock %}

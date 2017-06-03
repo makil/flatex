@@ -1,0 +1,17 @@
+{% extends '@admin.layout/admin.html.twig' %}
+
+{% block title %}Pages{% endblock %}
+
+{% block content %}
+
+    <h1>Pages</h1>
+    <div class="row">
+    <ul>
+        {% for page in pages %}
+            <li>{{ page|e }}</li>
+        {% else %}
+            <li><em>no page found</em></li>
+        {% endfor %}
+    </ul>
+    </div>
+{% endblock %}
