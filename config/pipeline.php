@@ -44,7 +44,7 @@ $app->pipe(UrlHelperMiddleware::class);
 //
 // - route-based authentication
 // - route-based validation
-// - etc.
+$app->pipe('/admin', Auth\Action\AuthAction::class);
 
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();
