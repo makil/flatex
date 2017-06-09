@@ -31,11 +31,9 @@ $app->get('/:page', App\Action\HomePageAction::class, 'page')->setOptions(['defa
 $app->route('/login', Auth\Action\LoginAction::class, ['GET', 'POST'], 'login');
 $app->get('/logout', Auth\Action\LogoutAction::class, 'logout');
 
-$app->get('/admin', [
-    Admin\Action\HomePageAction::class], 'admin.home');
-$app->get('/admin/install', [Admin\Action\InstallAction::class], 'admin.install');
+$app->get('/admin', [Admin\Action\HomePageAction::class], 'admin.home');
 $app->route('/admin/page[/:action[/:id]]', [Admin\Action\PageAction::class], ['GET', 'POST'],
     'admin.page')->setOptions(['defaults' => ['action'=>'index', 'id'=> 0]]);
-$app->get('/admin/layout', [
-    Admin\Action\LayoutAction::class], 'admin.layout');
+$app->route('/admin/layout[/:action[/:id]]', [Admin\Action\LayoutAction::class], ['GET', 'POST'],
+    'admin.layout')->setOptions(['defaults' => ['action'=>'index', 'id'=> 0]]);
 $app->get('/admin/info', [Admin\Action\InfoAction::class], 'admin.info');

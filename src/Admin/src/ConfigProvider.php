@@ -38,7 +38,6 @@ class ConfigProvider
             ],
             'factories'  => [
                 Action\HomePageAction::class => Factory\HomePageFactory::class,
-                Action\InstallAction::class => Factory\InstallActionFactory::class, 
                 Action\PageAction::class => Factory\PageActionFactory::class,
                 Action\LayoutAction::class => Factory\LayoutActionFactory::class,                
             ],
@@ -56,6 +55,7 @@ class ConfigProvider
             'paths' => [
                 'admin'    => [__DIR__ . '/../templates/admin'],
                 'admin-page'    => [__DIR__ . '/../templates/admin-page'],
+                'admin-layout'    => [__DIR__ . '/../templates/admin-layout'],
                 'admin.error'  => [__DIR__ . '/../templates/error'],
                 'admin.layout' => [__DIR__ . '/../templates/layout'],
             ],

@@ -1,0 +1,11 @@
+{% extends '@admin.layout/admin.html.twig' %}
+
+{% block title %}Layout{% endblock %}
+
+{% block content %}
+
+    <h1>Layout {{ layout.name }}</h1>
+    <div class="row">
+        {% include('@admin-layout/layout-form.html.twig') with {'layout':layout} %}
+    </div>
+{% endblock %}

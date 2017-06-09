@@ -12,27 +12,59 @@ use Zend\Expressive\Template;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Twig\TwigRenderer;
 use Zend\Expressive\ZendView\ZendViewRenderer;
-use Admin\File\FileSystemHelper;
+use Admin\Service\PageService;
+use Admin\Model\LayoutDTO;
 
 class LayoutAction implements ServerMiddlewareInterface
 {
-    private $fileSystemHelper;
-
+    private $pageService;
     private $template;
 
-    public function __construct(Template\TemplateRendererInterface $template, FileSystemHelper $fileSystemHelper)
+    public function __construct(Template\TemplateRendererInterface $template, PageService $pageService)
     {
-        $this->fileSystemHelper   = $fileSystemHelper;
-        $this->template = $template;
+        $this->pageService = $pageService;
+        $this->template    = $template;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
 
+        switch ($request->getAttribute('action', 'index')) {
+            case 'index':
+                return $this->indexAction($request, $delegate);
+            case 'edit':
+                return $this->editAction($request, $delegate);
+            default:
+                // Invalid; thus, a 404!
+                return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
+        }
+    }
+
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $data = [];
-        $data['layouts'] = $this->fileSystemHelper->getFiles();
+        $data['layouts'] = $this->pageService->getLayouts();
 
+        return new HtmlResponse($this->template->render('admin-layout::layout-index', $data));
+    }
 
-        return new HtmlResponse($this->template->render('admin::layout', $data));
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $id = $request->getAttribute('id', false);
+        if (! $id) {
+            throw new \InvalidArgumentException('id parameter must be provided');
+        }
+        $content = file_get_contents($this->pageService->getLayoutDirectory() . '/' . $id, FILE_USE_INCLUDE_PATH);
+        $layout = new LayoutDTO($id, $content );
+        if ($request->getMethod() === 'POST') {
+            $params = $request->getParsedBody();
+            if (!empty($params['name'])) {
+                // update layout with content
+                return new RedirectResponse('/admin/layout/edit/' . $params['name']);
+            }
+        }
+        return new HtmlResponse(
+            $this->template->render('admin-layout::layout-edit', ['layout' => $layout])
+        );
     }
 }

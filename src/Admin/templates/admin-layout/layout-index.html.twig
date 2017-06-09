@@ -10,7 +10,7 @@
     <div class="row">
     <ul>
         {% for layout in layouts %}
-            <li>{{ layout|e }}</li>
+            <li><a href="{{ path('admin.layout', {'action': 'edit','id': layout }) }}">{{ layout|e }}</a></li>
         {% else %}
             <li><em>no layout found</em></li>
         {% endfor %}

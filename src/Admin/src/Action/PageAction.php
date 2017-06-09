@@ -13,18 +13,18 @@ use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Twig\TwigRenderer;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\Diactoros\Response\RedirectResponse;
-use Admin\File\FileSystemHelper;
+use Admin\Service\PageService;
 use Admin\Model\PageDTO;
 
 class PageAction implements ServerMiddlewareInterface
 {
-    private $fileSystemHelper;
+    private $pageService;
     private $twigEnvironment;
     private $template;
 
-    public function __construct(Template\TemplateRendererInterface $template, FileSystemHelper $fileSystemHelper, $twigEnvironment)
+    public function __construct(Template\TemplateRendererInterface $template, PageService $pageService, $twigEnvironment)
     {
-        $this->fileSystemHelper   = $fileSystemHelper;
+        $this->pageService   = $pageService;
         $this->template = $template;
         $this->twigEnvironment = $twigEnvironment;
     }
@@ -47,7 +47,7 @@ class PageAction implements ServerMiddlewareInterface
     {
          $data = [];
 
-        $data['pages'] = $this->fileSystemHelper->getFiles();
+        $data['pages'] = $this->pageService->getPages();
         return new HtmlResponse($this->template->render('admin-page::page-index', $data));
     }
 
@@ -58,7 +58,7 @@ class PageAction implements ServerMiddlewareInterface
             $params = $request->getParsedBody();
             if (!empty($params['name'])) {
                 $page = new PageDTO($params['name'], $params['template'], $params['title'], $params['content']);
-                $this->fileSystemHelper->createPage($page);
+                $this->pageService->createPage($page);
                 return new RedirectResponse('/admin/page/edit/' . $params['name']);
             }
         }
@@ -82,7 +82,7 @@ class PageAction implements ServerMiddlewareInterface
             $params = $request->getParsedBody();
             if (!empty($params['name'])) {
                 $page = new PageDTO($params['name'], $params['template'], $params['title'], $params['content']);
-                $this->fileSystemHelper->updatePage($page);
+                $this->pageService->updatePage($page);
                 return new RedirectResponse('/admin/page/edit/' . $params['name']);
             }
         }

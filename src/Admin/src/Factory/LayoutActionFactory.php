@@ -6,17 +6,17 @@ use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Admin\Action\LayoutAction;
-use Admin\File\FileSystemHelper;
+use Admin\Service\PageService;
 
 class LayoutActionFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $fileSystemHelper = new FileSystemHelper(FileSystemHelper::DEFAULT_LAYOUT_DIRECTORY);
+        $pageService = new PageService();
         $template = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)
             : null;
 
-        return new LayoutAction($template, $fileSystemHelper);
+        return new LayoutAction($template, $pageService);
     }
 }
