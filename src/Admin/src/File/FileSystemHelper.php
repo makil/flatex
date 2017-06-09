@@ -27,8 +27,14 @@ class FileSystemHelper
         return $files;
     }
 
-     public function createPage(PageDTO $page) {
+    public function createPage(PageDTO $page) {
         $filename = $this->path . '/' . $page->name . '.html.twig';
+        $content = $this->createContent($page);
+        file_put_contents ( $filename, $content);
+    }
+
+    public function updatePage(PageDTO $page) {
+        $filename = $this->path . '/' . $page->name ;
         $content = $this->createContent($page);
         file_put_contents ( $filename, $content);
     }

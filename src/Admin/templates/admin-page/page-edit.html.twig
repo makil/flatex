@@ -4,8 +4,8 @@
 
 {% block content %}
 
-    <h1>Page {{ id }}</h1>
+    <h1>Page {{ page.name }}</h1>
     <div class="row">
-    
+        {% include('@admin-page/page-form.html.twig') with {'page':page} %}
     </div>
 {% endblock %}

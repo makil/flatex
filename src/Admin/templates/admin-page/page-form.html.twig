@@ -7,15 +7,15 @@
   </div>
   <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" class="form-control" id="title" placeholder="Title"  name='title'>
+    <input type="text" class="form-control" id="title" placeholder="Title"  name='title'  value="{{ page.title }}">
   </div>
   <div class="form-group">
     <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" placeholder="Name" name='name'>
+    <input type="text" class="form-control" id="name" placeholder="Name" name='name' value="{{ page.name }}">
   </div>
   <div class="form-group">
     <label for="content">Content</label>
-    <textarea class="form-control" rows="3" id="content" placeholder="Content" name='content'></textarea>
+    <textarea class="form-control" rows="9" id="content" placeholder="Content" name='content'>{{ page.content}}</textarea>
   </div>
   <button type="submit" class="btn btn-default">Submit</button>
 </form>

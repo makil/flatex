@@ -12,19 +12,21 @@ use Zend\Expressive\Template;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Twig\TwigRenderer;
 use Zend\Expressive\ZendView\ZendViewRenderer;
+use Zend\Diactoros\Response\RedirectResponse;
 use Admin\File\FileSystemHelper;
 use Admin\Model\PageDTO;
 
 class PageAction implements ServerMiddlewareInterface
 {
     private $fileSystemHelper;
-
+    private $twigEnvironment;
     private $template;
 
-    public function __construct(Template\TemplateRendererInterface $template, FileSystemHelper $fileSystemHelper)
+    public function __construct(Template\TemplateRendererInterface $template, FileSystemHelper $fileSystemHelper, $twigEnvironment)
     {
         $this->fileSystemHelper   = $fileSystemHelper;
         $this->template = $template;
+        $this->twigEnvironment = $twigEnvironment;
     }
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -51,15 +53,17 @@ class PageAction implements ServerMiddlewareInterface
 
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $page = new PageDTO('name', 'template', 'title', 'content');
         if ($request->getMethod() === 'POST') {
             $params = $request->getParsedBody();
             if (!empty($params['name'])) {
                 $page = new PageDTO($params['name'], $params['template'], $params['title'], $params['content']);
                 $this->fileSystemHelper->createPage($page);
-                return new HtmlResponse('added');
-            }  
+                return new RedirectResponse('/admin/page/edit/' . $params['name']);
+            }
         }
-        return new HtmlResponse($this->template->render('admin-page::page-add'));
+        $viewParams = ['page' => $page];
+        return new HtmlResponse($this->template->render('admin-page::page-add', $viewParams));
     }
 
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -68,17 +72,22 @@ class PageAction implements ServerMiddlewareInterface
         if (! $id) {
             throw new \InvalidArgumentException('id parameter must be provided');
         }
-
-       /* 
-        $loader = new \Twig_Loader_Filesystem('C:\Users\mahir\php\flatex\data\templates');
-        $twig = new \Twig_Environment($loader, [
-            'cache' => 'data/cache/twig',
-        ]);
-        $template = $twig->loadTemplate('page::' . substr($id, 0, -10) ); 
-        */
-
+        
+        $this->twigEnvironment->getLoader()->setPaths(__DIR__ .'/../../../../data/templates/pages');
+        $template = $this->twigEnvironment->loadTemplate($id);
+        $title = $template->renderBlock('title', []);
+        $content = $template->renderBlock('content', []);
+        $page = new PageDTO($id, 'default', $title, $content);
+        if ($request->getMethod() === 'POST') {
+            $params = $request->getParsedBody();
+            if (!empty($params['name'])) {
+                $page = new PageDTO($params['name'], $params['template'], $params['title'], $params['content']);
+                $this->fileSystemHelper->updatePage($page);
+                return new RedirectResponse('/admin/page/edit/' . $params['name']);
+            }
+        }
         return new HtmlResponse(
-            $this->template->render('admin-page::page-edit', ['id' => $id])
+            $this->template->render('admin-page::page-edit', ['page' => $page])
         );
     }
 }
