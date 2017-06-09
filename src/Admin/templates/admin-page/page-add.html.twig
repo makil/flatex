@@ -1,0 +1,13 @@
+{% extends '@admin.layout/admin.html.twig' %}
+
+{% block title %}Pages{% endblock %}
+
+{% block content %}
+
+    <h1>Add Page</h1>
+    <div class="row">
+        {% include('@admin-page/page-form.html.twig') %}
+    </div>
+    
+{% endblock %}
+        

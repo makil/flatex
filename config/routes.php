@@ -34,7 +34,7 @@ $app->get('/logout', Auth\Action\LogoutAction::class, 'logout');
 $app->get('/admin', [
     Admin\Action\HomePageAction::class], 'admin.home');
 $app->get('/admin/install', [Admin\Action\InstallAction::class], 'admin.install');
-$app->get('/admin/page[/:action[/:id]]', [Admin\Action\PageAction::class], 
+$app->route('/admin/page[/:action[/:id]]', [Admin\Action\PageAction::class], ['GET', 'POST'],
     'admin.page')->setOptions(['defaults' => ['action'=>'index', 'id'=> 0]]);
 $app->get('/admin/layout', [
     Admin\Action\LayoutAction::class], 'admin.layout');

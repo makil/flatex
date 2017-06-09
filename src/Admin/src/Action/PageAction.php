@@ -13,6 +13,7 @@ use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Twig\TwigRenderer;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 use Admin\File\FileSystemHelper;
+use Admin\Model\PageDTO;
 
 class PageAction implements ServerMiddlewareInterface
 {
@@ -50,6 +51,14 @@ class PageAction implements ServerMiddlewareInterface
 
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if ($request->getMethod() === 'POST') {
+            $params = $request->getParsedBody();
+            if (!empty($params['name'])) {
+                $page = new PageDTO($params['name'], $params['template'], $params['title'], $params['content']);
+                $this->fileSystemHelper->createPage($page);
+                return new HtmlResponse('added');
+            }  
+        }
         return new HtmlResponse($this->template->render('admin-page::page-add'));
     }
 
@@ -59,6 +68,14 @@ class PageAction implements ServerMiddlewareInterface
         if (! $id) {
             throw new \InvalidArgumentException('id parameter must be provided');
         }
+
+       /* 
+        $loader = new \Twig_Loader_Filesystem('C:\Users\mahir\php\flatex\data\templates');
+        $twig = new \Twig_Environment($loader, [
+            'cache' => 'data/cache/twig',
+        ]);
+        $template = $twig->loadTemplate('page::' . substr($id, 0, -10) ); 
+        */
 
         return new HtmlResponse(
             $this->template->render('admin-page::page-edit', ['id' => $id])

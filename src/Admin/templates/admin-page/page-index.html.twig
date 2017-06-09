@@ -5,6 +5,7 @@
 {% block content %}
 
     <h1>Pages</h1>
+    <a href="{{ path('admin.page', {'action': 'add' }) }}" class=" btn btn-default">Add page</a>
     <div class="row">
     <ul>
         {% for page in pages %}

@@ -1,6 +1,8 @@
 <?php
 namespace Admin\File;
 
+use Admin\Model\PageDTO;
+
 class FileSystemHelper
 {
 
@@ -10,16 +12,24 @@ class FileSystemHelper
 
     public function __construct(string $path = '')
     {
-            $this->path   .= $path;
-        
+        $this->path   .= $path;
     }
 
-    public static function createDirectory($path, $mode = 0775){
-
+    private function createContent(PageDTO $page){
+        $content = "{% extends '@layout/" . $page->template . ".html.twig' %}\n";
+        $content .= "{% block title %}" . $page->title . "{% endblock %}\n";
+        $content .= "{% block content %}" . $page->content . "{% endblock %}";
+        return $content;
     }
 
     public function getFiles(){
         $files = array_diff(scandir($this->path), array('.', '..'));
         return $files;
+    }
+
+     public function createPage(PageDTO $page) {
+        $filename = $this->path . '/' . $page->name . '.html.twig';
+        $content = $this->createContent($page);
+        file_put_contents ( $filename, $content);
     }
 }

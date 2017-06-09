@@ -33,7 +33,10 @@ class MyAuthAdapter implements AdapterInterface
     {
         // Retrieve the user's information (e.g. from a database)
         // and store the result in $row (e.g. associative array).
-        $userPasswordHash = password_hash('123456', PASSWORD_DEFAULT);
+        if($this->username !== 'admin@test.de'){
+            return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $this->username);
+        }
+        $userPasswordHash = password_hash('admin', PASSWORD_DEFAULT);
         $row = ['password' => $userPasswordHash ];
 
         if (password_verify($this->password, $row['password'])) {
