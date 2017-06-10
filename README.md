@@ -1,4 +1,4 @@
-# Expressive Flat File System
+# Flatex CMS
 
 This app is for demonstration purposes. Do not use in production!
 
