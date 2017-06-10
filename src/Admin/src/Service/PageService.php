@@ -2,6 +2,7 @@
 namespace Admin\Service;
 
 use Admin\Model\PageDTO;
+use Admin\Model\LayoutDTO;
 
 class PageService
 {
@@ -47,5 +48,10 @@ class PageService
         $filename = $this->getPageDirectory() . '/' . $page->name ;
         $content = $this->createContent($page);
         file_put_contents ( $filename, $content);
+    }
+
+    public function updateLayout(LayoutDTO $layout) {
+        $filename = $this->getLayoutDirectory() . '/' . $layout->name ;
+        file_put_contents ( $filename, $layout->content);
     }
 }

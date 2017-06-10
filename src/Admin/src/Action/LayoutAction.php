@@ -7,6 +7,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Expressive\Plates\PlatesRenderer;
@@ -58,8 +59,9 @@ class LayoutAction implements ServerMiddlewareInterface
         $layout = new LayoutDTO($id, $content );
         if ($request->getMethod() === 'POST') {
             $params = $request->getParsedBody();
+            $layout = new LayoutDTO($id, $params['content'] );
             if (!empty($params['name'])) {
-                // update layout with content
+                $this->pageService->updateLayout($layout);
                 return new RedirectResponse('/admin/layout/edit/' . $params['name']);
             }
         }
